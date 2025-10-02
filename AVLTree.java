@@ -1,6 +1,6 @@
 
 /*
- * *** YOUR NAME GOES HERE / YOUR SECTION NUMBER ***
+ * *** Alena Eshaya / 02 ***
  *
  * This java file is a Java object implementing simple AVL Tree.
  * You are to complete the deleteElement method.
@@ -343,29 +343,65 @@ class LUC_AVLTree {
 
     private Node deleteElement(int value, Node node) {
 
-        /*
-         * ADD CODE HERE
-         * 
-         * NOTE, that you should use the existing coded private methods
-         * in this file, which include:
-         *      - minValueNode,
-         *      - getMaxHeight,
-         *      - getHeight,
-         *      - getBalanceFactor,
-         *      - LLRotation
-         *      - RRRotation,
-         *      - LRRotation,
-         *      - RLRotation.
-         *
-         * To understand what each of these methods do, see the method prologues and
-         * code for each. You can also look at the method InsertElement, as it has do
-         * do many of the same things as this method.
-         */
+        //base case, so if its null no value found
+        if (node == null){
+            return node;
+        }
 
-        return node;
+        if(value <node.value){
+            node.leftChild = deleteElement(value, node.leftChild);
+        } else if (value > node.value){
+            node.rightChild = deleteElement(value, node.rightChild);
+
+        } else {
+            //node w 1 child
+            if ((node.leftChild == null)) {
+                return node.rightChild;
+            }else if (node.rightChild == null){
+                return node.leftChild;
+            }
+
+
+            //node w 2 children
+            Node succesor = minValueNode(node.rightChild);
+
+                node.value = succesor.value;
+                
+                node.rightChild = deleteElement(succesor.value, node.rightChild);
+        }
+
+        node.height = getMaxHeight(getHeight(node.leftChild), getHeight(node.rightChild)) + 1;
+
+
+        int bf= getBalanceFactor(node);
+
+        //LL case
+        if(bf > 1 && getBalanceFactor(node.leftChild) >= 0) {
+            return LLRotation(node);
+        }
+
+        //LR case
+        if (bf>1 && getBalanceFactor(node.leftChild) < 0){
+                        return LRRotation(node);
+        }
+
+        //RR case
+        if(bf < -1 && getBalanceFactor(node.rightChild) <=0 ){
+            return RRRotation(node);
+        }
+
+        //RL case
+        if (bf < -1 && getBalanceFactor(node.rightChild) > 0){
+
+        
+                    return RLRotation(node);
+
+        }
+                return node;
     }
+        
 
-
+    
     /**
      *  Method getBalance
      *
